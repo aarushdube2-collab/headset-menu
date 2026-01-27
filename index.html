@@ -2,16 +2,53 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>VR Test</title>
+<title>VR Model Loader</title>
 <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
 </head>
 
 <body>
+
 <a-scene vr-mode-ui="enabled:true" background="color:#050507">
+
+  <!-- Assets -->
+  <a-assets timeout="10000">
+    <a-asset-item
+      id="foodModel"
+      src="models/burger/scene.gltf">
+    </a-asset-item>
+  </a-assets>
+
+  <!-- Camera -->
   <a-entity camera look-controls position="0 1.6 0"></a-entity>
 
-  <a-box position="0 1.5 -3" color="#4CC3D9"></a-box>
-  <a-plane rotation="-90 0 0" width="10" height="10" color="#222"></a-plane>
+  <!-- Lights -->
+  <a-entity light="type:ambient; intensity:1"></a-entity>
+  <a-entity light="type:directional; intensity:0.6" position="1 2 1"></a-entity>
+
+  <!-- Model -->
+  <a-entity
+    gltf-model="#foodModel"
+    position="0 1.4 -3"
+    scale="0.5 0.5 0.5"
+    rotation="0 45 0">
+  </a-entity>
+
+  <!-- Floor -->
+  <a-plane rotation="-90 0 0" width="20" height="20" color="#111"></a-plane>
+
 </a-scene>
+
+<script>
+const model = document.querySelector('[gltf-model]');
+
+model.addEventListener('model-loaded', () => {
+  console.log('✅ MODEL LOADED');
+});
+
+model.addEventListener('model-error', (e) => {
+  console.error('❌ MODEL FAILED', e);
+});
+</script>
+
 </body>
 </html>
