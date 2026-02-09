@@ -1,65 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>VR Animals</title>
-  <!-- A-Frame (VR + Stereo ready) -->
-  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<title>VR Animals Circle</title>
+
+<script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 </head>
-<body style="margin: 0; overflow: hidden;">
+<body style="margin:0; overflow:hidden;">
+
 <a-scene
-  background="color: #0a0a0a"
-  vr-mode-ui="enabled: true"
-  device-orientation-permission-ui="enabled: true">
+  background="color:#0a0a0a"
+  vr-mode-ui="enabled:true"
+  device-orientation-permission-ui="enabled:true">
+
   <!-- Camera Rig -->
   <a-entity id="rig" position="0 1 0">
     <a-camera look-controls></a-camera>
   </a-entity>
+
   <!-- Lights -->
-  <a-entity light="type: ambient; intensity: 0.6"></a-entity>
-  <a-entity light="type: directional; intensity: 0.9" position="2 4 3"></a-entity>
-  <!-- World (raise/lower THIS, not the camera) -->
-  <a-entity id="world" position="0 0 0">
-    <!-- 7 animals in a circle, radius 5, spaced at 51.43° intervals -->
-    
-    <!-- Cheetah at 0° (front) -->
-    <a-entity gltf-model="cheetah/scene.gltf"
-              position="0 0 -5"
-              rotation="0 0 0"
-              scale="1.5 1.5 1.5"></a-entity>
-       
-    <!-- Tiger at 102.86° -->
-    <a-entity gltf-model="dinosaur/scene.gltf"
-              position="4.82 0 1.11"
-              rotation="0 -103 0"
-              scale="1 1 1"></a-entity>
-    
-    <!-- Wolf at 154.29° -->
-    <a-entity gltf-model="wolf/scene.gltf"
-              position="2.16 0 4.51"
-              rotation="0 -154 0"
-              scale="1.5 1.5 1.5"></a-entity>
-    
-    <!-- Eagle at 205.71° (back-left) -->
-    <a-entity gltf-model="eagle/scene.gltf"
-              position="-2.16 0.5 4.51"
-              rotation="0 154 0"
-              scale="0.8 0.8 0.8"></a-entity>
-    
-    <!-- Rabbit at 257.14° -->
-    <a-entity gltf-model="rabbit/scene.gltf"
-              position="-4.82 -1 1.11"
-              rotation="0 103 0"
-              scale="0.1 0.1 0.1"></a-entity>
-    
-    <!-- Penguin at 308.57° -->
-    <a-entity gltf-model="penguin/scene.gltf"
-              position="-3.89 0.5 -3.11"
-              rotation="0 51 0"
-              scale="3.5 3.5 3.5"></a-entity>
-  </a-entity>
+  <a-entity light="type:ambient; intensity:0.6"></a-entity>
+  <a-entity light="type:directional; intensity:0.9" position="2 4 3"></a-entity>
+
+  <!-- World container -->
+  <a-entity id="world" position="0 0 0"></a-entity>
+
+  <!-- Circle Generator Script -->
+  <script>
+  const models = [
+    {src:"cheetah/scene.gltf", scale:"1.5 1.5 1.5", y:0},
+    {src:"dinosaur/scene.gltf", scale:"1 1 1", y:0},
+    {src:"wolf/scene.gltf", scale:"1.5 1.5 1.5", y:0},
+    {src:"eagle/scene.gltf", scale:"0.8 0.8 0.8", y:0.5},
+    {src:"rabbit/scene.gltf", scale:"0.1 0.1 0.1", y:-1},
+    {src:"penguin/scene.gltf", scale:"3.5 3.5 3.5", y:0.5}
+  ];
+
+  const radius = 5;
+  const world = document.querySelector("#world");
+
+  models.forEach((m, i) => {
+    const angle = (i / models.length) * Math.PI * 2;
+
+    const x = Math.sin(angle) * radius;
+    const z = -Math.cos(angle) * radius;
+    const rotY = -angle * (180 / Math.PI);
+
+    const el = document.createElement("a-entity");
+
+    el.setAttribute("gltf-model", m.src);
+    el.setAttribute("position", `${x} ${m.y} ${z}`);
+    el.setAttribute("rotation", `0 ${rotY} 0`);
+    el.setAttribute("scale", m.scale);
+
+    world.appendChild(el);
+  });
+  </script>
+
 </a-scene>
-  
+
 </body>
 </html>
